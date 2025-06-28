@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow - Your Personal Productivity Companion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3Cpath%20fill%3D%22%23667eea%22%20d%3D%22M152.1%2038.2c9.9%208.9%2010.7%2024%201.8%2033.9l-72%2080c-4.4%204.9-10.6%207.8-17.2%207.9s-12.9-2.4-17.6-7L7%20113C-2.3%20103.6-2.3%2088.4%207%2079s24.6-9.4%2033.9%200l22.1%2022.1%2055.1-61.2c8.9-9.9%2024-10.7%2033.9-1.8zm0%20160c9.9%208.9%2010.7%2024%201.8%2033.9l-72%2080c-4.4%204.9-10.6%207.8-17.2%207.9s-12.9-2.4-17.6-7L7%20273c-9.4-9.4-9.4-24.6%200-33.9s24.6-9.4%2033.9%200l22.1%2022.1%2055.1-61.2c8.9-9.9%2024-10.7%2033.9-1.8zM224%2096c0-17.7%2014.3-32%2032-32l224%200c17.7%200%2032%2014.3%2032%2032s-14.3%2032-32%2032l-224%200c-17.7%200-32-14.3-32-32zm0%20160c0-17.7%2014.3-32%2032-32l224%200c17.7%200%2032%2014.3%2032%2032s-14.3%2032-32%2032l-224%200c-17.7%200-32-14.3-32-32zM160%20416c0-17.7%2014.3-32%2032-32l288%200c17.7%200%2032%2014.3%2032%2032s-14.3%2032-32%2032l-288%200c-17.7%200-32-14.3-32-32zM48%20368a48%2048%200%201%201%200%2096%2048%2048%200%201%201%200-96z%22/%3E%3C/svg%3E"
+    />
+    <style>
+        * {
+            transition: all 0.2s ease;
+        }
+        
+        body {
+            background-color: #0f172a;
+        }
+        
+        .card {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+        }
+        
+        .card:hover {
+            border-color: #475569;
+        }
+        
+        .input-field {
+            background-color: #334155;
+            border: 1px solid #475569;
+            color: #e2e8f0;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+        
+        .input-field::placeholder {
+            color: #94a3b8;
+        }
+        
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200 min-h-screen flex items-center justify-center p-4">
+    <!-- Hidden locale placeholder for future localization -->
+    <div id="locale-placeholder" data-locale="guj" class="hidden"></div>
+    
+    <div class="w-full max-w-md">
+        <!-- Header Section -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-lg mb-6">
+                <i class="fas fa-tasks text-white text-2xl"></i>
+            </div>
+            <h1 class="text-3xl font-bold text-white mb-2">TaskFlow</h1>
+            <p class="text-slate-400 text-lg mb-2">Your Personal Productivity Companion</p>
+            <div class="flex items-center justify-center text-slate-400 text-sm">
+                <i class="fas fa-shield-alt mr-2"></i>
+                <span>Age verification required for access</span>
+            </div>
+        </div>
+
+        <!-- Main Form Card -->
+        <div class="card rounded-lg p-6 sm:p-8">
+            <h2 class="text-xl font-semibold text-white mb-6 text-center">Verify Your Identity</h2>
+            
+            <form id="verificationForm" class="space-y-6">
+                <!-- Name Input -->
+                <div>
+                    <label for="fullName" class="block text-sm font-medium text-slate-300 mb-2">
+                        <i class="fas fa-user mr-2"></i>Full Name
+                    </label>
+                    <input
+                        type="text"
+                        id="fullName"
+                        name="fullName"
+                        placeholder="Enter your full name"
+                        class="input-field w-full px-4 py-3 rounded-lg"
+                        required
+                    >
+                    <div id="nameError" class="text-red-400 text-sm mt-1 hidden">
+                        <i class="fas fa-exclamation-circle mr-1"></i>
+                        <span>Please enter your full name</span>
+                    </div>
+                </div>
+
+                <!-- Date of Birth Input -->
+                <div>
+                    <label for="dateOfBirth" class="block text-sm font-medium text-slate-300 mb-2">
+                        <i class="fas fa-calendar-alt mr-2"></i>Date of Birth
+                    </label>
+                    <input
+                        type="date"
+                        id="dateOfBirth"
+                        name="dateOfBirth"
+                        class="input-field w-full px-4 py-3 rounded-lg"
+                        required
+                    >
+                    <div id="dobError" class="text-red-400 text-sm mt-1 hidden">
+                        <i class="fas fa-exclamation-circle mr-1"></i>
+                        <span></span>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button
+                    type="submit"
+                    class="btn-primary w-full font-semibold py-3 px-6 rounded-lg"
+                >
+                    <i class="fas fa-check-circle mr-2"></i>
+                    Verify & Continue
+                </button>
+
+                <!-- Loading State -->
+                <div id="loadingState" class="hidden text-center">
+                    <div class="inline-flex items-center text-slate-400">
+                        <i class="fas fa-spinner fa-spin mr-2"></i>
+                        Verifying your information...
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Footer Text -->
+        <div class="text-center mt-6 text-slate-400 text-sm">
+            <i class="fas fa-info-circle mr-1"></i>
+            By continuing, you confirm that you are over 10 years old and agree to our terms of service.
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

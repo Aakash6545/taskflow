@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TaskFlow - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3Cpath%20fill%3D%22%23667eea%22%20d%3D%22M152.1%2038.2c9.9%208.9%2010.7%2024%201.8%2033.9l-72%2080c-4.4%204.9-10.6%207.8-17.2%207.9s-12.9-2.4-17.6-7L7%20113C-2.3%20103.6-2.3%2088.4%207%2079s24.6-9.4%2033.9%200l22.1%2022.1%2055.1-61.2c8.9-9.9%2024-10.7%2033.9-1.8zm0%20160c9.9%208.9%2010.7%2024%201.8%2033.9l-72%2080c-4.4%204.9-10.6%207.8-17.2%207.9s-12.9-2.4-17.6-7L7%20273c-9.4-9.4-9.4-24.6%200-33.9s24.6-9.4%2033.9%200l22.1%2022.1%2055.1-61.2c8.9-9.9%2024-10.7%2033.9-1.8zM224%2096c0-17.7%2014.3-32%2032-32l224%200c17.7%200%2032%2014.3%2032%2032s-14.3%2032-32%2032l-224%200c-17.7%200-32-14.3-32-32zm0%20160c0-17.7%2014.3-32%2032-32l224%200c17.7%200%2032%2014.3%2032%2032s-14.3%2032-32%2032l-224%200c-17.7%200-32-14.3-32-32zM160%20416c0-17.7%2014.3-32%2032-32l288%200c17.7%200%2032%2014.3%2032%2032s-14.3%2032-32%2032l-288%200c-17.7%200-32-14.3-32-32zM48%20368a48%2048%200%201%201%200%2096%2048%2048%200%201%201%200-96z%22/%3E%3C/svg%3E"
+    />
+
+    <style>
+      * {
+        transition: all 0.2s ease;
+      }
+
+      body {
+        background-color: #0f172a;
+      }
+
+      .card {
+        background-color: #1e293b;
+        border: 1px solid #334155;
+      }
+
+      .card:hover {
+        border-color: #475569;
+      }
+
+      .task-card {
+        background-color: #1e293b;
+        border: 1px solid #334155;
+        transition: all 0.2s ease;
+      }
+
+      .task-card:hover {
+        transform: translateY(-1px);
+        border-color: #64748b;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
+
+      .priority-indicator {
+        width: 4px;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        border-radius: 0 4px 4px 0;
+      }
+
+      .priority-high .priority-indicator {
+        background-color: #ef4444;
+      }
+
+      .priority-medium .priority-indicator {
+        background-color: #f59e0b;
+      }
+
+      .priority-low .priority-indicator {
+        background-color: #22c55e;
+      }
+
+      .priority-badge {
+        font-size: 0.75rem;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-weight: 500;
+      }
+
+      .priority-high .priority-badge {
+        background-color: rgba(239, 68, 68, 0.2);
+        color: #fca5a5;
+      }
+
+      .priority-medium .priority-badge {
+        background-color: rgba(245, 158, 11, 0.2);
+        color: #fcd34d;
+      }
+
+      .priority-low .priority-badge {
+        background-color: rgba(34, 197, 94, 0.2);
+        color: #86efac;
+      }
+
+      .stage-btn {
+        flex: 1;
+        padding: 1rem;
+        background-color: #334155;
+        color: #94a3b8;
+        border: none;
+        font-weight: 500;
+        cursor: pointer;
+        position: relative;
+        border-radius: 8px;
+        margin: 0 2px;
+      }
+
+      .stage-btn.stage-active {
+        background-color: #3b82f6;
+        color: white;
+      }
+
+      .stage-btn:hover:not(.stage-active) {
+        background-color: #475569;
+        color: #e2e8f0;
+      }
+
+      .btn-primary {
+        background-color: #3b82f6;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background-color: #2563eb;
+      }
+
+      .btn-success {
+        background-color: #22c55e;
+        color: white;
+      }
+
+      .btn-success:hover {
+        background-color: #16a34a;
+      }
+
+      .btn-danger {
+        background-color: #ef4444;
+        color: white;
+      }
+
+      .btn-danger:hover {
+        background-color: #dc2626;
+      }
+
+      .btn-secondary {
+        background-color: #64748b;
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        background-color: #475569;
+      }
+
+      .btn-warning {
+        background-color: #f59e0b;
+        color: white;
+      }
+
+      .btn-warning:hover {
+        background-color: #d97706;
+      }
+
+      .input-field {
+        background-color: #334155;
+        border: 1px solid #475569;
+        color: #e2e8f0;
+      }
+
+      .input-field:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+      }
+
+      .input-field::placeholder {
+        color: #94a3b8;
+      }
+
+      .select-field {
+        background-color: #334155;
+        border: 1px solid #475569;
+        color: #e2e8f0;
+      }
+
+      .select-field:focus {
+        outline: none;
+        border-color: #3b82f6;
+      }
+
+      .select-field option {
+        background-color: #1e293b;
+        color: #e2e8f0;
+      }
+
+      .stage-content {
+        min-height: 400px;
+      }
+
+      .desktop-buttons {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: flex-end;
+        margin-top: 1rem;
+      }
+
+      .mobile-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+      }
+
+      .desktop-buttons button,
+      .mobile-buttons button {
+        padding: 0.5rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+      }
+
+      @media (max-width: 640px) {
+        .desktop-buttons {
+          display: none;
+        }
+
+        .mobile-buttons button {
+          flex: 1;
+          min-width: 0;
+          font-size: 0.75rem;
+          padding: 0.5rem;
+        }
+      }
+
+      @media (min-width: 641px) {
+        .mobile-buttons {
+          display: none;
+        }
+      }
+
+      .fade-in {
+        animation: fadeIn 0.3s ease-in;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .slide-in {
+        animation: slideIn 0.5s ease-out;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .loading-spinner {
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .delete-btn {
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .delete-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .delete-btn:active {
+        transform: scale(0.95);
+      }
+
+      .task-card {
+        position: relative;
+      }
+
+      @media (max-width: 640px) {
+        .delete-btn {
+          width: 24px;
+          height: 24px;
+          font-size: 10px;
+        }
+      }
+
+      .glass-effect {
+        background: rgba(255, 255, 255, 0.1);
+
+        backdrop-filter: blur(16px);
+
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+    </style>
+  </head>
+  <body class="bg-slate-900 text-slate-200 min-h-screen">
+    <!-- Hidden div for future localization -->
+    <div id="locale-placeholder" data-locale="guj" style="display: none"></div>
+
+    <!-- Header Section -->
+    <header class="bg-slate-800 border-b border-slate-700 sticky top-0 z-40">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <!-- Logo and Title -->
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div
+                class="inline-flex items-center justify-center w-10 h-10 bg-blue-600 rounded-lg"
+              >
+                <i class="fas fa-tasks text-white text-lg"></i>
+              </div>
+            </div>
+            <div class="ml-3">
+              <h1 class="text-xl font-bold text-white">TaskFlow</h1>
+              <p class="text-slate-400 text-xs hidden sm:block">
+                Productivity Dashboard
+              </p>
+            </div>
+          </div>
+
+          <!-- User Info -->
+          <div class="flex items-center space-x-2 sm:space-x-4">
+            <div class="flex items-center space-x-2 sm:space-x-3">
+              <img
+                id="userAvatar"
+                class="w-8 h-8 sm:w-10 sm:h-10 rounded-full"
+                alt="User Avatar"
+                src="https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=User"
+              />
+              <div class="hidden sm:block">
+                <p class="text-white font-medium text-sm">
+                  Welcome back, <span id="userName">User</span>!
+                </p>
+                <p class="text-slate-400 text-xs">Stay productive</p>
+              </div>
+            </div>
+            <button
+              id="signOutBtn"
+              class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium"
+              onclick="handleSignOut()"
+            >
+              <i class="fas fa-sign-out-alt mr-2"></i>Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <!-- Task Input Section -->
+      <div class="card rounded-lg p-4 sm:p-6 mb-6 sm:mb-8">
+        <h2
+          class="text-xl sm:text-2xl font-bold text-white mb-4 flex items-center"
+        >
+          <i class="fas fa-plus-circle mr-2 text-blue-400"></i>Add New Task
+        </h2>
+        <form id="taskForm" class="space-y-4">
+          <div class="flex flex-col sm:flex-row gap-4">
+            <div class="flex-1">
+              <input
+                type="text"
+                id="taskInput"
+                placeholder="What needs to be done?"
+                class="input-field w-full px-4 py-3 rounded-lg"
+                required
+              />
+            </div>
+            <div class="flex flex-col sm:flex-row gap-2 sm:gap-4">
+              <select
+                id="prioritySelect"
+                class="select-field px-3 py-3 rounded-lg"
+              >
+                <option value="low">Low Priority</option>
+                <option value="medium" selected>Medium Priority</option>
+                <option value="high">High Priority</option>
+              </select>
+              <button
+                type="submit"
+                class="btn-primary px-4 sm:px-6 py-3 rounded-lg font-medium whitespace-nowrap"
+              >
+                <i class="fas fa-plus mr-2"></i>Add Task
+              </button>
+            </div>
+          </div>
+        </form>
+        <div id="taskError" class="text-red-400 text-sm mt-3 hidden">
+          <i class="fas fa-exclamation-circle mr-1"></i>
+          <span>Please enter a task description</span>
+        </div>
+      </div>
+
+      <!-- Stage Selection -->
+      <div class="flex flex-wrap mb-6 sm:mb-8 gap-2 sm:gap-4">
+        <button
+          data-stage="todo"
+          class="stage-btn flex-1 sm:min-w-[100px] text-center px-2 sm:px-4 py-3 rounded-xl font-medium transition flex items-center justify-center stage-active"
+        >
+          <i class="fas fa-list mr-2 flex-shrink-0"></i>
+          <span class="text-sm">Todo</span>
+          <span
+            id="todoCount"
+            class="bg-slate-600 text-white px-2 py-1 rounded-full text-xs ml-2 flex-shrink-0"
+            >0</span
+          >
+        </button>
+
+        <button
+          data-stage="completed"
+          class="stage-btn flex-1 sm:min-w-[100px] text-center px-2 sm:px-4 py-3 rounded-xl font-medium transition flex items-center justify-center"
+        >
+          <i class="fas fa-check-circle mr-2 flex-shrink-0"></i>
+          <span class="text-sm">Completed</span>
+          <span
+            id="completedCount"
+            class="bg-slate-600 text-white px-2 py-1 rounded-full text-xs ml-2 flex-shrink-0"
+            >0</span
+          >
+        </button>
+
+        <button
+          data-stage="archived"
+          class="stage-btn flex-1 sm:min-w-[100px] text-center px-2 sm:px-4 py-3 rounded-xl font-medium transition flex items-center justify-center"
+        >
+          <i class="fas fa-archive mr-2 flex-shrink-0"></i>
+          <span class="text-sm">Archived</span>
+          <span
+            id="archivedCount"
+            class="bg-slate-600 text-white px-2 py-1 rounded-full text-xs ml-2 flex-shrink-0"
+            >0</span
+          >
+        </button>
+      </div>
+
+      <!-- Task Stages Container -->
+      <div class="stage-content">
+        <!-- Todo Stage -->
+        <div id="todoStage" class="stage-container">
+          <div class="card rounded-lg p-4 sm:p-6">
+            <div class="flex items-center justify-between mb-4 sm:mb-6">
+              <h3
+                class="text-lg sm:text-xl font-bold text-white flex items-center"
+              >
+                <div class="w-3 h-3 bg-blue-400 rounded-full mr-3"></div>
+                Todo Tasks
+              </h3>
+            </div>
+            <div id="todoTasks" class="space-y-3 sm:space-y-4">
+              <!-- Tasks will be dynamically inserted here -->
+            </div>
+            <div
+              id="todoEmpty"
+              class="text-center py-8 sm:py-12 text-slate-400 hidden"
+            >
+              <i
+                class="fas fa-clipboard-list text-3xl sm:text-4xl mb-4 opacity-50"
+              ></i>
+              <p class="text-base sm:text-lg">No todo tasks</p>
+              <p class="text-sm">Add a new task to get started!</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Completed Stage -->
+        <div id="completedStage" class="stage-container hidden">
+          <div class="card rounded-lg p-4 sm:p-6">
+            <div class="flex items-center justify-between mb-4 sm:mb-6">
+              <h3
+                class="text-lg sm:text-xl font-bold text-white flex items-center"
+              >
+                <div class="w-3 h-3 bg-green-400 rounded-full mr-3"></div>
+                Completed Tasks
+              </h3>
+            </div>
+            <div id="completedTasks" class="space-y-3 sm:space-y-4">
+              <!-- Completed tasks will be dynamically inserted here -->
+            </div>
+            <div
+              id="completedEmpty"
+              class="text-center py-8 sm:py-12 text-slate-400 hidden"
+            >
+              <i class="fas fa-trophy text-3xl sm:text-4xl mb-4 opacity-50"></i>
+              <p class="text-base sm:text-lg">No completed tasks yet</p>
+              <p class="text-sm">Complete some tasks to see them here!</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Archived Stage -->
+        <div id="archivedStage" class="stage-container hidden">
+          <div class="card rounded-lg p-4 sm:p-6">
+            <div class="flex items-center justify-between mb-4 sm:mb-6">
+              <h3
+                class="text-lg sm:text-xl font-bold text-white flex items-center"
+              >
+                <div class="w-3 h-3 bg-gray-400 rounded-full mr-3"></div>
+                Archived Tasks
+              </h3>
+            </div>
+            <div id="archivedTasks" class="space-y-3 sm:space-y-4">
+              <!-- Archived tasks will be dynamically inserted here -->
+            </div>
+            <div
+              id="archivedEmpty"
+              class="text-center py-8 sm:py-12 text-slate-400 hidden"
+            >
+              <i class="fas fa-box text-3xl sm:text-4xl mb-4 opacity-50"></i>
+              <p class="text-base sm:text-lg">No archived tasks</p>
+              <p class="text-sm">
+                Archive completed tasks for future reference!
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div
+      id="loadingOverlay"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden"
+    >
+      <div class="card rounded-lg p-8 text-center">
+        <div
+          class="loading-spinner rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto mb-4"
+        ></div>
+        <p class="text-white text-lg">Loading your tasks...</p>
+      </div>
+    </div>
+
+    <!-- Sign-Out Confirmation Modal -->
+    <div
+      id="signoutModal"
+      class="hidden fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+    >
+      <div
+        class="glass-effect rounded-2xl shadow-xl max-w-sm w-full mx-4 p-6 opacity-0 transition-opacity duration-200"
+        id="signoutCard"
+      >
+        <h3 class="text-xl font-semibold text-white mb-2">Confirm Sign Out</h3>
+        <p class="text-slate-300 mb-6">Are you sure you want to sign out?</p>
+        <div class="flex justify-end space-x-3">
+          <button
+            id="cancelSignOut"
+            class="px-4 py-2 bg-slate-600 text-white rounded-lg hover:bg-slate-500 transition"
+          >
+            Cancel
+          </button>
+          <button
+            id="confirmSignOut"
+            class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+          >
+            Sign Out
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="script1.js"></script>
+  </body>
+</html>
