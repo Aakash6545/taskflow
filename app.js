@@ -17,6 +17,9 @@ const loadingOverlay = document.getElementById("loadingOverlay");
 const signOutBtn = document.getElementById("signOutBtn");
 const searchInput = document.getElementById("searchInput");
 const clearSearchBtn = document.getElementById("clearSearch");
+const importBtn = document.getElementById("importBtn");
+const exportBtn = document.getElementById("exportBtn");
+const fileInput = document.getElementById("fileInput");
 
 // Initialize app
 document.addEventListener("DOMContentLoaded", function () {
@@ -60,11 +63,23 @@ function setupUserInterface() {
   document.getElementById("userAvatar").src = avatarUrl;
 }
 
+
+document.getElementById('importBtnMobile').addEventListener('click', function() {
+  document.getElementById('importBtn').click(); // Trigger the same function as desktop
+});
+
+document.getElementById('exportBtnMobile').addEventListener('click', function() {
+  document.getElementById('exportBtn').click(); // Trigger the same function as desktop
+});
+
 function setupEventListeners() {
   taskForm.addEventListener("submit", handleAddTask);
   signOutBtn.addEventListener("click", handleSignOut);
   searchInput.addEventListener("input", handleSearch);
   clearSearchBtn.addEventListener("click", clearSearch);
+  importBtn.addEventListener("click", handleImportClick);
+  exportBtn.addEventListener("click", handleExportTasks);
+  fileInput.addEventListener("change", handleFileImport);
   stageButtons.forEach((btn) => {
     btn.addEventListener("click", (e) => {
       const stage = e.currentTarget.getAttribute("data-stage");
@@ -659,4 +674,247 @@ function filterTasksBySearch(taskArray) {
       task.text.toLowerCase().includes(searchQuery) ||
       task.priority.toLowerCase().includes(searchQuery)
   );
+}
+
+function handleImportClick() {
+  fileInput.click();
+}
+
+function handleExportTasks() {
+  try {
+    const exportData = {
+      tasks: tasks,
+      exportDate: new Date().toISOString(),
+      version: "1.0",
+      totalTasks: tasks.length,
+    };
+
+    const dataStr = JSON.stringify(exportData, null, 2);
+    const dataBlob = new Blob([dataStr], { type: "application/json" });
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(dataBlob);
+
+    const timestamp = new Date().toISOString().split("T")[0];
+    link.download = `taskflow-tasks-${timestamp}.json`;
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(link.href);
+
+    showNotification(
+      `Tasks exported successfully! 📥 (${tasks.length} tasks)`,
+      "success"
+    );
+  } catch (error) {
+    console.error("Export error:", error);
+    showNotification("Failed to export tasks. Please try again.", "error");
+  }
+}
+
+function handleFileImport(event) {
+  const file = event.target.files[0];
+
+  if (!file) return;
+
+  // Validate file type
+  if (
+    !file.type.includes("json") &&
+    !file.name.toLowerCase().endsWith(".json")
+  ) {
+    showNotification("Please select a valid JSON file.", "error");
+    resetFileInput();
+    return;
+  }
+
+  // Validate file size (max 5MB)
+  if (file.size > 5 * 1024 * 1024) {
+    showNotification(
+      "File too large. Please select a file smaller than 5MB.",
+      "error"
+    );
+    resetFileInput();
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = function (e) {
+    try {
+      const importData = JSON.parse(e.target.result);
+      validateAndImportTasks(importData);
+    } catch (error) {
+      console.error("JSON parsing error:", error);
+      showNotification(
+        "Invalid JSON file. Please check the file format.",
+        "error"
+      );
+      resetFileInput();
+    }
+  };
+
+  reader.onerror = function () {
+    showNotification("Error reading file. Please try again.", "error");
+    resetFileInput();
+  };
+
+  reader.readAsText(file);
+}
+
+function validateAndImportTasks(importData) {
+  try {
+    // Check if it's a valid TaskFlow export
+    if (!importData.tasks || !Array.isArray(importData.tasks)) {
+      showNotification(
+        "Invalid file format. Expected TaskFlow export file.",
+        "error"
+      );
+      resetFileInput();
+      return;
+    }
+
+    const importedTasks = importData.tasks;
+
+    // Validate each task structure
+    const validTasks = [];
+    let invalidCount = 0;
+
+    importedTasks.forEach((task, index) => {
+      if (validateTaskStructure(task)) {
+        // Ensure unique IDs and proper structure
+        const validTask = {
+          id: taskIdCounter++,
+          text: String(task.text || `Imported task ${index + 1}`).trim(),
+          priority: ["high", "medium", "low"].includes(task.priority)
+            ? task.priority
+            : "medium",
+          status: ["todo", "completed", "archived"].includes(task.status)
+            ? task.status
+            : "todo",
+          lastModified: task.lastModified || new Date().toISOString(),
+        };
+        validTasks.push(validTask);
+      } else {
+        invalidCount++;
+      }
+    });
+
+    if (validTasks.length === 0) {
+      showNotification("No valid tasks found in the file.", "error");
+      resetFileInput();
+      return;
+    }
+
+    // Show confirmation modal
+    showImportConfirmation(validTasks, invalidCount);
+  } catch (error) {
+    console.error("Import validation error:", error);
+    showNotification(
+      "Error processing import file. Please check the file format.",
+      "error"
+    );
+    resetFileInput();
+  }
+}
+
+function validateTaskStructure(task) {
+  return (
+    task &&
+    typeof task === "object" &&
+    (task.text || task.title || task.description) &&
+    typeof (task.text || task.title || task.description) === "string"
+  );
+}
+
+function showImportConfirmation(validTasks, invalidCount) {
+  const modal = document.createElement("div");
+  modal.className =
+    "fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50";
+  modal.id = "importModal";
+
+  modal.innerHTML = `
+    <div class="glass-effect rounded-xl shadow-2xl max-w-md w-full mx-4 p-6 opacity-0 transition-opacity duration-200" id="importCard">
+      <h3 class="text-lg font-semibold text-slate-100 mb-2 flex items-center">
+        <i class="fas fa-file-import mr-2 text-blue-400"></i>
+        Confirm Import
+      </h3>
+      <div class="text-slate-400 mb-4 text-sm space-y-2">
+        <p><span class="text-emerald-400 font-medium">${
+          validTasks.length
+        }</span> valid tasks found</p>
+        ${
+          invalidCount > 0
+            ? `<p><span class="text-yellow-400 font-medium">${invalidCount}</span> invalid tasks will be skipped</p>`
+            : ""
+        }
+        <p class="text-slate-500">This will add tasks to your existing collection.</p>
+      </div>
+      <div class="flex justify-end space-x-3">
+        <button id="cancelImport" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 hover:text-slate-200 transition-all duration-200 text-sm border border-slate-700/50 hover:border-slate-600/50">
+          Cancel
+        </button>
+        <button id="confirmImport" class="px-4 py-2 bg-blue-500/10 text-blue-400 rounded-lg hover:bg-blue-500/20 hover:text-blue-300 transition-all duration-200 text-sm border border-blue-500/20 hover:border-blue-500/30">
+          Import Tasks
+        </button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  const card = modal.querySelector("#importCard");
+  setTimeout(() => card.classList.add("opacity-100"), 10);
+
+  // Event listeners
+  modal.querySelector("#cancelImport").addEventListener("click", () => {
+    closeImportModal(modal);
+    resetFileInput();
+  });
+
+  modal.querySelector("#confirmImport").addEventListener("click", () => {
+    executeImport(validTasks, invalidCount);
+    closeImportModal(modal);
+    resetFileInput();
+  });
+
+  // Backdrop click to cancel
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      closeImportModal(modal);
+      resetFileInput();
+    }
+  });
+}
+
+function closeImportModal(modal) {
+  const card = modal.querySelector("#importCard");
+  card.classList.remove("opacity-100");
+  card.addEventListener(
+    "transitionend",
+    () => {
+      if (modal.parentNode) {
+        document.body.removeChild(modal);
+      }
+    },
+    { once: true }
+  );
+}
+
+function executeImport(validTasks, invalidCount) {
+  tasks.push(...validTasks);
+  saveTasks();
+  updateUI();
+
+  let message = `Successfully imported ${validTasks.length} tasks! 📁`;
+  if (invalidCount > 0) {
+    message += ` (${invalidCount} invalid tasks skipped)`;
+  }
+
+  showNotification(message, "success");
+}
+
+function resetFileInput() {
+  fileInput.value = "";
 }

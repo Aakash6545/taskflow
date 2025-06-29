@@ -1,598 +1,355 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TaskFlow - Premium Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-        rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
     />
     <link
-        rel="icon"
-        type="image/svg+xml"
-        href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3Cpath%20fill%3D%22%23475569%22%20d%3D%22M152.1%2038.2c9.9%208.9%2010.7%2024%201.8%2033.9l-72%2080c-4.4%204.9-10.6%207.8-17.2%207.9s-12.9-2.4-17.6-7L7%20113C-2.3%20103.6-2.3%2088.4%207%2079s24.6-9.4%2033.9%200l22.1%2022.1%2055.1-61.2c8.9-9.9%2024-10.7%2033.9-1.8zm0%20160c9.9%208.9%2010.7%2024%201.8%2033.9l-72%2080c-4.4%204.9-10.6%207.8-17.2%207.9s-12.9-2.4-17.6-7L7%20273c-9.4-9.4-9.4-24.6%200-33.9s24.6-9.4%2033.9%200l22.1%2022.1%2055.1-61.2c8.9-9.9%2024-10.7%2033.9-1.8zM224%2096c0-17.7%2014.3-32%2032-32l224%200c17.7%200%2032%2014.3%2032%2032s-14.3%2032-32%2032l-224%200c-17.7%200-32-14.3-32-32zm0%20160c0-17.7%2014.3-32%2032-32l224%200c17.7%200%2032%2014.3%2032%2032s-14.3%2032-32%2032l-224%200c-17.7%200-32-14.3-32-32zM160%20416c0-17.7%2014.3-32%2032-32l288%200c17.7%200%2032%2014.3%2032%2032s-14.3%2032-32%2032l-288%200c-17.7%200-32-14.3-32-32zM48%20368a48%2048%200%201%201%200%2096%2048%2048%200%201%201%200-96z%22/%3E%3C/svg%3E"
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20512%20512%22%3E%3Cpath%20fill%3D%22%23475569%22%20d%3D%22M152.1%2038.2c9.9%208.9%2010.7%2024%201.8%2033.9l-72%2080c-4.4%204.9-10.6%207.8-17.2%207.9s-12.9-2.4-17.6-7L7%20113C-2.3%20103.6-2.3%2088.4%207%2079s24.6-9.4%2033.9%200l22.1%2022.1%2055.1-61.2c8.9-9.9%2024-10.7%2033.9-1.8zm0%20160c9.9%208.9%2010.7%2024%201.8%2033.9l-72%2080c-4.4%204.9-10.6%207.8-17.2%207.9s-12.9-2.4-17.6-7L7%20273c-9.4-9.4-9.4-24.6%200-33.9s24.6-9.4%2033.9%200l22.1%2022.1%2055.1-61.2c8.9-9.9%2024-10.7%2033.9-1.8zM224%2096c0-17.7%2014.3-32%2032-32l224%200c17.7%200%2032%2014.3%2032%2032s-14.3%2032-32%2032l-224%200c-17.7%200-32-14.3-32-32zm0%20160c0-17.7%2014.3-32%2032-32l224%200c17.7%200%2032%2014.3%2032%2032s-14.3%2032-32%2032l-224%200c-17.7%200-32-14.3-32-32zM160%20416c0-17.7%2014.3-32%2032-32l288%200c17.7%200%2032%2014.3%2032%2032s-14.3%2032-32%2032l-288%200c-17.7%200-32-14.3-32-32zM48%20368a48%2048%200%201%201%200%2096%2048%2048%200%201%201%200-96z%22/%3E%3C/svg%3E"
     />
-    <style>
-        * {
-            transition: all 0.2s ease;
-        }
-        
-        body {
-            background-color: #020617;
-        }
-        
-        .premium-card {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(51, 65, 85, 0.6);
-        }
-        
-        .premium-card:hover {
-            border-color: rgba(71, 85, 105, 0.6);
-        }
-        
-        .card {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(51, 65, 85, 0.6);
-        }
-        
-        .card:hover {
-            border-color: rgba(71, 85, 105, 0.6);
-        }
-        
-        .task-card {
-            background: rgba(30, 41, 59, 0.4);
-            border: 1px solid rgba(51, 65, 85, 0.6);
-            border-left: 4px solid;
-            transition: all 0.2s ease;
-            backdrop-filter: blur(8px);
-            position: relative;
-        }
-        
-        .task-card:hover {
-            background: rgba(30, 41, 59, 0.6);
-            transform: translateY(-1px);
-            border-color: rgba(71, 85, 105, 0.6);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-        
-        .priority-high {
-            border-left-color: rgba(248, 113, 113, 0.8);
-            background: rgba(239, 68, 68, 0.05);
-        }
-        
-        .priority-medium {
-            border-left-color: rgba(251, 191, 36, 0.8);
-            background: rgba(245, 158, 11, 0.05);
-        }
-        
-        .priority-low {
-            border-left-color: rgba(52, 211, 153, 0.8);
-            background: rgba(16, 185, 129, 0.05);
-        }
-        
-        .priority-badge {
-            font-size: 0.75rem;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-weight: 500;
-            border: 1px solid;
-        }
-        
-        .priority-high .priority-badge {
-            background: rgba(239, 68, 68, 0.1);
-            color: rgba(248, 113, 113, 0.9);
-            border-color: rgba(239, 68, 68, 0.2);
-        }
-        
-        .priority-medium .priority-badge {
-            background: rgba(245, 158, 11, 0.1);
-            color: rgba(251, 191, 36, 0.9);
-            border-color: rgba(245, 158, 11, 0.2);
-        }
-        
-        .priority-low .priority-badge {
-            background: rgba(16, 185, 129, 0.1);
-            color: rgba(52, 211, 153, 0.9);
-            border-color: rgba(16, 185, 129, 0.2);
-        }
-        
-        .stage-btn {
-            flex: 1;
-            padding: 0.625rem 1rem;
-            background: rgba(15, 23, 42, 0.4);
-            color: #94a3b8;
-            border: 1px solid rgba(30, 41, 59, 0.6);
-            font-weight: 500;
-            cursor: pointer;
-            border-radius: 8px;
-            margin: 0 4px;
-            font-size: 0.875rem;
-            transition: all 0.2s ease;
-        }
-        
-        .stage-btn.stage-active {
-            background: rgba(30, 41, 59, 1);
-            color: #f1f5f9;
-            border-color: rgba(71, 85, 105, 0.6);
-        }
-        
-        .stage-btn:hover:not(.stage-active) {
-            background: rgba(30, 41, 59, 0.6);
-            color: #e2e8f0;
-            border-color: rgba(71, 85, 105, 0.6);
-        }
-        
-        .btn-primary {
-            background: rgba(30, 41, 59, 1);
-            color: #e2e8f0;
-            border: 1px solid rgba(71, 85, 105, 0.5);
-        }
-        
-        .btn-primary:hover {
-            background: rgba(51, 65, 85, 1);
-            border-color: rgba(100, 116, 139, 0.5);
-        }
-        
-        .btn-success {
-            background: rgba(16, 185, 129, 0.1);
-            color: rgba(52, 211, 153, 1);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-        }
-        
-        .btn-success:hover {
-            background: rgba(16, 185, 129, 0.2);
-            border-color: rgba(16, 185, 129, 0.3);
-        }
-        
-        .btn-danger {
-            background: rgba(239, 68, 68, 0.1);
-            color: rgba(248, 113, 113, 1);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-        }
-        
-        .btn-danger:hover {
-            background: rgba(239, 68, 68, 0.2);
-            border-color: rgba(239, 68, 68, 0.3);
-        }
-        
-        .btn-secondary {
-            background: rgba(100, 116, 139, 0.2);
-            color: #94a3b8;
-            border: 1px solid rgba(100, 116, 139, 0.3);
-        }
-        
-        .btn-secondary:hover {
-            background: rgba(100, 116, 139, 0.3);
-            border-color: rgba(71, 85, 105, 0.4);
-        }
-        
-        .btn-warning {
-            background: rgba(245, 158, 11, 0.1);
-            color: rgba(251, 191, 36, 1);
-            border: 1px solid rgba(245, 158, 11, 0.2);
-        }
-        
-        .btn-warning:hover {
-            background: rgba(245, 158, 11, 0.2);
-            border-color: rgba(245, 158, 11, 0.3);
-        }
-        
-        .input-field {
-            background: rgba(30, 41, 59, 0.6);
-            border: 1px solid rgba(71, 85, 105, 0.6);
-            color: #f1f5f9;
-            backdrop-filter: blur(8px);
-        }
-        
-        .input-field:focus {
-            outline: none;
-            border-color: rgba(100, 116, 139, 0.6);
-            box-shadow: 0 0 0 1px rgba(100, 116, 139, 0.5);
-        }
-        
-        .input-field::placeholder {
-            color: #64748b;
-        }
-        
-        .select-field {
-            background: rgba(30, 41, 59, 0.6);
-            border: 1px solid rgba(71, 85, 105, 0.6);
-            color: #f1f5f9;
-            backdrop-filter: blur(8px);
-        }
-        
-        .select-field:focus {
-            outline: none;
-            border-color: rgba(100, 116, 139, 0.6);
-        }
-        
-        .select-field option {
-            background: #1e293b;
-            color: #f1f5f9;
-        }
-        
-        .stage-content {
-            min-height: 400px;
-        }
-        
-        .desktop-buttons {
-            display: flex;
-            gap: 0.5rem;
-            justify-content: flex-end;
-            margin-top: 1rem;
-            opacity: 1;
-            transition: opacity 0.2s ease;
-        }
-        
-        .mobile-buttons {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            margin-top: 1rem;
-        }
-        
-        
-        
-        .desktop-buttons button,
-        .mobile-buttons button {
-            padding: 0.375rem 0.75rem;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            cursor: pointer;
-            border: 1px solid;
-            transition: all 0.2s ease;
-        }
-        
-        .delete-btn {
-            transition: all 0.2s ease;
-            opacity: 1;
-            background: rgba(71, 85, 105, 0.6);
-            border: 1px solid rgba(100, 116, 139, 0.4);
-        }
-        
-        
-        
-        .delete-btn:hover {
-            background: rgba(239, 68, 68, 0.2);
-            border-color: rgba(239, 68, 68, 0.3);
-            color: rgba(248, 113, 113, 1);
-        }
-        
-        .glass-effect {
-            background: rgba(15, 23, 42, 0.9);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(71, 85, 105, 0.6);
-        }
-        
-        .header-glass {
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(30, 41, 59, 0.6);
-        }
-        
-        @media (max-width: 640px) {
-            .desktop-buttons {
-                opacity: 1;
-                display: none;
-            }
-            
-            .mobile-buttons button {
-                flex: 1;
-                min-width: 0;
-                font-size: 0.75rem;
-                padding: 0.5rem;
-            }
-            
-            .delete-btn {
-                opacity: 1;
-                width: 24px;
-                height: 24px;
-                font-size: 10px;
-            }
-        }
-        
-        @media (min-width: 641px) {
-            .mobile-buttons {
-                display: none;
-            }
-        }
-        
-        .signout-text {
-            display: none;
-        }
-        
-        @media (min-width: 340px) {
-            .signout-text {
-                display: inline;
-            }
-        }
-        
-        .loading-spinner {
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        
-        .fade-in {
-            animation: fadeIn 0.3s ease-in;
-        }
-        
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .slide-in {
-            animation: slideIn 0.5s ease-out;
-        }
-        
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    </style>
-</head>
+    <link rel="stylesheet" href="app.css">
+  </head>
 
-<body class="bg-slate-950 text-slate-100 min-h-screen">
+  <body class="bg-slate-950 text-slate-100 min-h-screen">
     <!-- Hidden div for future localization -->
     <div id="locale-placeholder" data-locale="guj" style="display: none"></div>
-    
+
     <!-- Header Section -->
     <header class="header-glass sticky top-0 z-40">
-        <div class="max-w-6xl mx-auto px-6 lg:px-8">
-            <div class="flex items-center justify-between h-14">
-                <!-- Logo and Title -->
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <div class="inline-flex items-center justify-center w-8 h-8 bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg border border-slate-700/50">
-                            <i class="fas fa-tasks text-slate-300 text-sm"></i>
-                        </div>
-                    </div>
-                    <div class="ml-3">
-                        <h1 class="text-lg font-semibold text-slate-100 tracking-tight">TaskFlow</h1>
-                        <p class="text-slate-500 text-xs hidden sm:block font-medium">Productivity Dashboard</p>
-                    </div>
-                </div>
-                <!-- User Info -->
-                <div class="flex items-center space-x-3">
-                    <div class="flex items-center space-x-3">
-                        <img
-                            id="userAvatar"
-                            class="w-7 h-7 sm:w-8 sm:h-8 rounded-full ring-1 ring-slate-700/50"
-                            alt="User Avatar"
-                            src="https://ui-avatars.com/api/?background=334155&color=e2e8f0&name=User&size=32"
-                        />
-                        <div class="hidden sm:block">
-                            <p class="text-slate-200 font-medium text-sm">
-                                Welcome back, <span id="userName">User</span>!
-                            </p>
-                            <p class="text-slate-500 text-xs">Stay productive</p>
-                        </div>
-                    </div>
-                    <button
-                        id="signOutBtn"
-                        class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-slate-200 px-3 py-1.5 rounded-lg text-sm font-medium flex items-center justify-center transition-all duration-200 border border-slate-700/50 hover:border-slate-600/50"
-                        onclick="handleSignOut()"
-                    >
-                        <i class="fas fa-sign-out-alt w-3.5 h-3.5 mr-1.5"></i>
-                        <span class="signout-text">Sign Out</span>
-                    </button>
-                </div>
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-14 min-h-[3.5rem]">
+          <!-- Logo and Title -->
+          <div class="flex items-center min-w-0 flex-shrink-0">
+            <div class="flex-shrink-0">
+              <div
+                class="inline-flex items-center justify-center w-8 h-8 bg-gradient-to-br from-slate-700 to-slate-800 rounded-lg border border-slate-700/50"
+              >
+                <i class="fas fa-tasks text-slate-300 text-sm"></i>
+              </div>
             </div>
+            <div class="ml-3 min-w-0">
+              <h1 class="text-base sm:text-lg font-semibold text-slate-100 tracking-tight truncate">
+                TaskFlow
+              </h1>
+              <p class="text-slate-500 text-xs hidden sm:block font-medium">
+                Productivity Dashboard
+              </p>
+            </div>
+          </div>
+
+          <!-- User Info and Actions -->
+          <div class="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
+            <!-- Import/Export for medium and larger screens -->
+            <div class="hidden md:flex items-center space-x-2">
+              <button
+                id="importBtn"
+                class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-slate-200 px-2 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium flex items-center justify-center transition-all duration-200 border border-slate-700/50 hover:border-slate-600/50"
+                title="Import Tasks"
+              >
+                <i class="fas fa-file-import w-3.5 h-3.5 mr-1 sm:mr-1.5"></i>
+                <span class="hidden lg:inline">Import</span>
+              </button>
+              <button
+                id="exportBtn"
+                class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-slate-200 px-2 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium flex items-center justify-center transition-all duration-200 border border-slate-700/50 hover:border-slate-600/50"
+                title="Export Tasks"
+              >
+                <i class="fas fa-file-export w-3.5 h-3.5 mr-1 sm:mr-1.5"></i>
+                <span class="hidden lg:inline">Export</span>
+              </button>
+            </div>
+
+            <div class="flex items-center space-x-2 sm:space-x-3 min-w-0">
+              <img
+                id="userAvatar"
+                class="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full ring-1 ring-slate-700/50 flex-shrink-0"
+                alt="User Avatar"
+                src="https://ui-avatars.com/api/?background=334155&color=e2e8f0&name=User&size=32"
+              />
+              <div class="hidden sm:block min-w-0">
+                <p class="text-slate-200 font-medium text-xs sm:text-sm truncate">
+                  Welcome back, <span id="userName">User</span>!
+                </p>
+                <p class="text-slate-500 text-xs hidden md:block">Stay productive</p>
+              </div>
+            </div>
+
+            <button
+              id="signOutBtn"
+              class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-slate-200 px-2 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium flex items-center justify-center transition-all duration-200 border border-slate-700/50 hover:border-slate-600/50 flex-shrink-0"
+              onclick="handleSignOut()"
+            >
+              <i class="fas fa-sign-out-alt w-3.5 h-3.5 mr-1 sm:mr-1.5"></i>
+              <span class="signout-text">Sign Out</span>
+            </button>
+          </div>
         </div>
+
+        <!-- Mobile Import/Export buttons below header -->
+        <div
+          class="md:hidden flex items-center justify-center space-x-2 pb-3 border-b border-slate-700/30"
+        >
+          <button
+            id="importBtnMobile"
+            class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-slate-200 px-3 py-2 rounded-lg text-sm font-medium flex items-center justify-center transition-all duration-200 border border-slate-700/50 hover:border-slate-600/50 flex-1"
+            title="Import Tasks"
+          >
+            <i class="fas fa-file-import w-3.5 h-3.5 mr-1.5"></i>
+            <span>Import</span>
+          </button>
+          <button
+            id="exportBtnMobile"
+            class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-slate-200 px-3 py-2 rounded-lg text-sm font-medium flex items-center justify-center transition-all duration-200 border border-slate-700/50 hover:border-slate-600/50 flex-1"
+            title="Export Tasks"
+          >
+            <i class="fas fa-file-export w-3.5 h-3.5 mr-1.5"></i>
+            <span>Export</span>
+          </button>
+        </div>
+      </div>
     </header>
 
+    <input type="file" id="fileInput" accept=".json" style="display: none" />
+
     <!-- Main Content -->
-    <main class="max-w-6xl mx-auto px-6 lg:px-8 py-6">
-        <!-- Task Input Section -->
-        <div class="premium-card rounded-xl p-5 mb-6">
-            <h2 class="text-lg font-semibold text-slate-100 mb-4 flex items-center">
-                <i class="fas fa-plus-circle mr-2 text-slate-400"></i>Add New Task
-            </h2>
-            <form id="taskForm" class="space-y-4">
-                <div class="flex flex-col sm:flex-row gap-3">
-                    <div class="flex-1">
-                        <input
-                            type="text"
-                            id="taskInput"
-                            placeholder="What needs to be done?"
-                            class="input-field w-full px-4 py-2.5 rounded-lg text-sm"
-                            required
-                        />
-                    </div>
-                    <div class="flex flex-col sm:flex-row gap-3">
-                        <select id="prioritySelect" class="select-field px-3 py-2.5 rounded-lg text-sm">
-                            <option value="low">Low Priority</option>
-                            <option value="medium" selected>Medium Priority</option>
-                            <option value="high">High Priority</option>
-                        </select>
-                        <button
-                            type="submit"
-                            class="btn-primary px-5 py-2.5 rounded-lg font-medium whitespace-nowrap text-sm"
-                        >
-                            <i class="fas fa-plus mr-1.5"></i>Add Task
-                        </button>
-                    </div>
-                </div>
-            </form>
-            <div id="taskError" class="text-red-400/90 text-sm mt-3 hidden">
-                <i class="fas fa-exclamation-circle mr-1.5"></i>
-                <span>Please enter a task description</span>
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+      <!-- Task Input Section -->
+      <div class="premium-card rounded-xl p-4 sm:p-5 mb-4 sm:mb-6">
+        <h2 class="text-base sm:text-lg font-semibold text-slate-100 mb-3 sm:mb-4 flex items-center">
+          <i class="fas fa-plus-circle mr-2 text-slate-400"></i>Add New Task
+        </h2>
+        <form id="taskForm" class="space-y-3 sm:space-y-4">
+          <div class="flex flex-col sm:flex-row gap-3">
+            <div class="flex-1 min-w-0">
+              <input
+                type="text"
+                id="taskInput"
+                placeholder="What needs to be done?"
+                class="input-field w-full px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-sm"
+                required
+              />
             </div>
+            <div class="flex flex-col sm:flex-row gap-3 sm:flex-shrink-0">
+              <select
+                id="prioritySelect"
+                class="select-field px-3 py-2 sm:py-2.5 rounded-lg text-sm min-w-0 sm:min-w-[140px]"
+              >
+                <option value="low">Low Priority</option>
+                <option value="medium" selected>Medium Priority</option>
+                <option value="high">High Priority</option>
+              </select>
+              <button
+                type="submit"
+                class="btn-primary px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg font-medium whitespace-nowrap text-sm flex-shrink-0"
+              >
+                <i class="fas fa-plus mr-1.5"></i>Add Task
+              </button>
+            </div>
+          </div>
+        </form>
+        <div id="taskError" class="text-red-400/90 text-sm mt-3 hidden">
+          <i class="fas fa-exclamation-circle mr-1.5"></i>
+          <span>Please enter a task description</span>
+        </div>
+      </div>
+
+      <!-- Stage Selection -->
+      <div class="flex flex-wrap mb-4 sm:mb-6 gap-1 sm:gap-2">
+        <button
+          data-stage="todo"
+          class="stage-btn stage-active"
+        >
+          <i class="fas fa-list flex-shrink-0"></i>
+          <span>Todo</span>
+          <span
+            id="todoCount"
+            class="bg-slate-700/60 text-slate-300 px-1.5 py-0.5 rounded-full text-xs flex-shrink-0 min-w-[20px] text-center"
+            >0</span
+          >
+        </button>
+        <button
+          data-stage="completed"
+          class="stage-btn"
+        >
+          <i class="fas fa-check-circle flex-shrink-0"></i>
+          <span>Completed</span>
+          <span
+            id="completedCount"
+            class="bg-slate-700/60 text-slate-300 px-1.5 py-0.5 rounded-full text-xs flex-shrink-0 min-w-[20px] text-center"
+            >0</span
+          >
+        </button>
+        <button
+          data-stage="archived"
+          class="stage-btn"
+        >
+          <i class="fas fa-archive flex-shrink-0"></i>
+          <span>Archived</span>
+          <span
+            id="archivedCount"
+            class="bg-slate-700/60 text-slate-300 px-1.5 py-0.5 rounded-full text-xs flex-shrink-0 min-w-[20px] text-center"
+            >0</span
+          >
+        </button>
+      </div>
+
+      <!-- Search Bar -->
+      <div class="mb-4 sm:mb-6">
+        <div class="relative">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Search tasks..."
+            class="input-field w-full px-4 py-2 sm:py-2.5 pl-10 rounded-lg text-sm"
+          />
+          <div
+            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+          >
+            <i class="fas fa-search text-slate-500"></i>
+          </div>
+          <button
+            id="clearSearch"
+            class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 hover:text-slate-300 hidden transition-colors duration-200"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Task Stages Container -->
+      <div class="stage-content">
+        <!-- Todo Stage -->
+        <div id="todoStage" class="stage-container">
+          <div class="premium-card rounded-xl p-4 sm:p-5">
+            <div class="flex items-center justify-between mb-4 sm:mb-5">
+              <h3
+                class="text-base sm:text-lg font-semibold text-slate-100 flex items-center"
+              >
+                <div class="w-2 h-2 bg-slate-400 rounded-full mr-3 flex-shrink-0"></div>
+                Todo Tasks
+              </h3>
+            </div>
+            <div id="todoTasks" class="space-y-3">
+              <!-- Tasks will be dynamically inserted here -->
+            </div>
+            <div id="todoEmpty" class="text-center py-8 sm:py-12 text-slate-500 hidden">
+              <i class="fas fa-clipboard-list text-3xl sm:text-4xl mb-3 opacity-40"></i>
+              <p class="text-sm sm:text-base font-medium">No todo tasks</p>
+              <p class="text-xs sm:text-sm text-slate-600 mt-1">
+                Add a new task to get started!
+              </p>
+            </div>
+          </div>
         </div>
 
-        <!-- Stage Selection -->
-        <div class="flex flex-wrap mb-6 gap-2">
-            <button
-                data-stage="todo"
-                class="stage-btn flex-1 sm:min-w-[120px] text-center px-4 py-2.5 rounded-lg font-medium transition-all duration-200 flex items-center justify-center stage-active"
+        <!-- Completed Stage -->
+        <div id="completedStage" class="stage-container hidden">
+          <div class="premium-card rounded-xl p-4 sm:p-5">
+            <div class="flex items-center justify-between mb-4 sm:mb-5">
+              <h3
+                class="text-base sm:text-lg font-semibold text-slate-100 flex items-center"
+              >
+                <div class="w-2 h-2 bg-emerald-400/80 rounded-full mr-3 flex-shrink-0"></div>
+                Completed Tasks
+              </h3>
+            </div>
+            <div id="completedTasks" class="space-y-3">
+              <!-- Completed tasks will be dynamically inserted here -->
+            </div>
+            <div
+              id="completedEmpty"
+              class="text-center py-8 sm:py-12 text-slate-500 hidden"
             >
-                <i class="fas fa-list mr-2 flex-shrink-0"></i>
-                <span>Todo</span>
-                <span
-                    id="todoCount"
-                    class="bg-slate-700/60 text-slate-300 px-1.5 py-0.5 rounded-full text-xs ml-2 flex-shrink-0 min-w-[20px]"
-                >0</span>
-            </button>
-            <button
-                data-stage="completed"
-                class="stage-btn flex-1 sm:min-w-[120px] text-center px-4 py-2.5 rounded-lg font-medium transition-all duration-200 flex items-center justify-center"
+              <i class="fas fa-trophy text-3xl sm:text-4xl mb-3 opacity-40"></i>
+              <p class="text-sm sm:text-base font-medium">No completed tasks yet</p>
+              <p class="text-xs sm:text-sm text-slate-600 mt-1">
+                Complete some tasks to see them here!
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Archived Stage -->
+        <div id="archivedStage" class="stage-container hidden">
+          <div class="premium-card rounded-xl p-4 sm:p-5">
+            <div class="flex items-center justify-between mb-4 sm:mb-5">
+              <h3
+                class="text-base sm:text-lg font-semibold text-slate-100 flex items-center"
+              >
+                <div class="w-2 h-2 bg-slate-500 rounded-full mr-3 flex-shrink-0"></div>
+                Archived Tasks
+              </h3>
+            </div>
+            <div id="archivedTasks" class="space-y-3">
+              <!-- Archived tasks will be dynamically inserted here -->
+            </div>
+            <div
+              id="archivedEmpty"
+              class="text-center py-8 sm:py-12 text-slate-500 hidden"
             >
-                <i class="fas fa-check-circle mr-2 flex-shrink-0"></i>
-                <span>Completed</span>
-                <span
-                    id="completedCount"
-                    class="bg-slate-700/60 text-slate-300 px-1.5 py-0.5 rounded-full text-xs ml-2 flex-shrink-0 min-w-[20px]"
-                >0</span>
-            </button>
-            <button
-                data-stage="archived"
-                class="stage-btn flex-1 sm:min-w-[120px] text-center px-4 py-2.5 rounded-lg font-medium transition-all duration-200 flex items-center justify-center"
-            >
-                <i class="fas fa-archive mr-2 flex-shrink-0"></i>
-                <span>Archived</span>
-                <span
-                    id="archivedCount"
-                    class="bg-slate-700/60 text-slate-300 px-1.5 py-0.5 rounded-full text-xs ml-2 flex-shrink-0 min-w-[20px]"
-                >0</span>
-            </button>
+              <i class="fas fa-box text-3xl sm:text-4xl mb-3 opacity-40"></i>
+              <p class="text-sm sm:text-base font-medium">No archived tasks</p>
+              <p class="text-xs sm:text-sm text-slate-600 mt-1">
+                Archive completed tasks for future reference!
+              </p>
+            </div>
+          </div>
         </div>
-
-        <!-- Search Bar -->
-        <div class="mb-6">
-            <div class="relative">
-                <input
-                    type="text"
-                    id="searchInput"
-                    placeholder="Search tasks..."
-                    class="input-field w-full px-4 py-2.5 pl-10 rounded-lg text-sm"
-                />
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i class="fas fa-search text-slate-500"></i>
-                </div>
-                <button
-                    id="clearSearch"
-                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 hover:text-slate-300 hidden transition-colors duration-200"
-                >
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- Task Stages Container -->
-        <div class="stage-content">
-            <!-- Todo Stage -->
-            <div id="todoStage" class="stage-container">
-                <div class="premium-card rounded-xl p-5">
-                    <div class="flex items-center justify-between mb-5">
-                        <h3 class="text-lg font-semibold text-slate-100 flex items-center">
-                            <div class="w-2 h-2 bg-slate-400 rounded-full mr-3"></div>
-                            Todo Tasks
-                        </h3>
-                    </div>
-                    <div id="todoTasks" class="space-y-3">
-                        <!-- Tasks will be dynamically inserted here -->
-                    </div>
-                    <div id="todoEmpty" class="text-center py-12 text-slate-500 hidden">
-                        <i class="fas fa-clipboard-list text-4xl mb-3 opacity-40"></i>
-                        <p class="text-base font-medium">No todo tasks</p>
-                        <p class="text-sm text-slate-600 mt-1">Add a new task to get started!</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Completed Stage -->
-            <div id="completedStage" class="stage-container hidden">
-                <div class="premium-card rounded-xl p-5">
-                    <div class="flex items-center justify-between mb-5">
-                        <h3 class="text-lg font-semibold text-slate-100 flex items-center">
-                            <div class="w-2 h-2 bg-emerald-400/80 rounded-full mr-3"></div>
-                            Completed Tasks
-                        </h3>
-                    </div>
-                    <div id="completedTasks" class="space-y-3">
-                        <!-- Completed tasks will be dynamically inserted here -->
-                    </div>
-                    <div id="completedEmpty" class="text-center py-12 text-slate-500 hidden">
-                        <i class="fas fa-trophy text-4xl mb-3 opacity-40"></i>
-                        <p class="text-base font-medium">No completed tasks yet</p>
-                        <p class="text-sm text-slate-600 mt-1">Complete some tasks to see them here!</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Archived Stage -->
-            <div id="archivedStage" class="stage-container hidden">
-                <div class="premium-card rounded-xl p-5">
-                    <div class="flex items-center justify-between mb-5">
-                        <h3 class="text-lg font-semibold text-slate-100 flex items-center">
-                            <div class="w-2 h-2 bg-slate-500 rounded-full mr-3"></div>
-                            Archived Tasks
-                        </h3>
-                    </div>
-                    <div id="archivedTasks" class="space-y-3">
-                        <!-- Archived tasks will be dynamically inserted here -->
-                    </div>
-                    <div id="archivedEmpty" class="text-center py-12 text-slate-500 hidden">
-                        <i class="fas fa-box text-4xl mb-3 opacity-40"></i>
-                        <p class="text-base font-medium">No archived tasks</p>
-                        <p class="text-sm text-slate-600 mt-1">Archive completed tasks for future reference!</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+      </div>
     </main>
 
     <!-- Loading Overlay -->
-    <div id="loadingOverlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 hidden">
-        <div class="glass-effect rounded-xl p-8 text-center">
-            <div class="loading-spinner rounded-full h-10 w-10 border-b-2 border-slate-400 mx-auto mb-4"></div>
-            <p class="text-slate-200 text-base">Loading your tasks...</p>
-        </div>
+    <div
+      id="loadingOverlay"
+      class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 hidden"
+    >
+      <div class="glass-effect rounded-xl p-6 sm:p-8 text-center mx-4">
+        <div
+          class="loading-spinner rounded-full h-8 w-8 sm:h-10 sm:w-10 border-b-2 border-slate-400 mx-auto mb-4"
+        ></div>
+        <p class="text-slate-200 text-sm sm:text-base">Loading your tasks...</p>
+      </div>
     </div>
 
     <!-- Sign-Out Confirmation Modal -->
-    <div id="signoutModal" class="hidden fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50">
-        <div class="glass-effect rounded-xl shadow-2xl max-w-sm w-full mx-4 p-6 opacity-0 transition-opacity duration-200" id="signoutCard">
-            <h3 class="text-lg font-semibold text-slate-100 mb-2">Confirm Sign Out</h3>
-            <p class="text-slate-400 mb-6 text-sm">Are you sure you want to sign out?</p>
-            <div class="flex justify-end space-x-3">
-                <button
-                    id="cancelSignOut"
-                    class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 hover:text-slate-200 transition-all duration-200 text-sm border border-slate-700/50 hover:border-slate-600/50"
-                >
-                    Cancel
-                </button>
-                <button
-                    id="confirmSignOut"
-                    class="px-4 py-2 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 hover:text-red-300 transition-all duration-200 text-sm border border-red-500/20 hover:border-red-500/30"
-                >
-                    Sign Out
-                </button>
-            </div>
+    <div
+      id="signoutModal"
+      class="hidden fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 modal-container"
+    >
+      <div
+        class="glass-effect rounded-xl shadow-2xl max-w-sm w-full mx-4 p-4 sm:p-6 opacity-0 transition-opacity duration-200"
+        id="signoutCard"
+      >
+        <h3 class="text-base sm:text-lg font-semibold text-slate-100 mb-2">
+          Confirm Sign Out
+        </h3>
+        <p class="text-slate-400 mb-4 sm:mb-6 text-sm">
+          Are you sure you want to sign out?
+        </p>
+        <div class="flex justify-end space-x-3">
+          <button
+            id="cancelSignOut"
+            class="px-3 sm:px-4 py-2 bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 hover:text-slate-200 transition-all duration-200 text-sm border border-slate-700/50 hover:border-slate-600/50"
+          >
+            Cancel
+          </button>
+          <button
+            id="confirmSignOut"
+            class="px-3 sm:px-4 py-2 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500/20 hover:text-red-300 transition-all duration-200 text-sm border border-red-500/20 hover:border-red-500/30"
+          >
+            Sign Out
+          </button>
         </div>
+      </div>
     </div>
 
     <script src="app.js"></script>
-</body>
+  </body>
 </html>
