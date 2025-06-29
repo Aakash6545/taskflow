@@ -187,8 +187,10 @@ body {
   flex-wrap: wrap;
   margin-top: 1rem;
 }
+
 .desktop-buttons button,
 .mobile-buttons button {
+    
   padding: 0.5rem 0.75rem;
   border-radius: 6px;
   font-size: 0.75rem;
@@ -199,6 +201,10 @@ body {
   white-space: nowrap;
   min-width: 0;
   flex-shrink: 0;
+}
+.desktop-buttons button {
+  min-width: 160px;   
+  height: 38px;      
 }
 .delete-btn {
   transition: all 0.2s ease;
