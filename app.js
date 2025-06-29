@@ -4,6 +4,8 @@ const priorityRank = { high: 0, medium: 1, low: 2 };
 let currentStage = "todo";
 let taskIdCounter = 1;
 let userData = null;
+let searchQuery = "";
+let searchTimeout = null;
 
 // DOM Elements
 const taskForm = document.getElementById("taskForm");
@@ -13,6 +15,8 @@ const taskError = document.getElementById("taskError");
 const stageButtons = document.querySelectorAll(".stage-btn");
 const loadingOverlay = document.getElementById("loadingOverlay");
 const signOutBtn = document.getElementById("signOutBtn");
+const searchInput = document.getElementById("searchInput");
+const clearSearchBtn = document.getElementById("clearSearch");
 
 // Initialize app
 document.addEventListener("DOMContentLoaded", function () {
@@ -59,7 +63,8 @@ function setupUserInterface() {
 function setupEventListeners() {
   taskForm.addEventListener("submit", handleAddTask);
   signOutBtn.addEventListener("click", handleSignOut);
-
+  searchInput.addEventListener("input", handleSearch);
+  clearSearchBtn.addEventListener("click", clearSearch);
   stageButtons.forEach((btn) => {
     btn.addEventListener("click", (e) => {
       const stage = e.currentTarget.getAttribute("data-stage");
@@ -83,8 +88,8 @@ const signoutModal = document.getElementById("signoutModal");
 confirmSignOut.addEventListener("click", () => {
   localStorage.removeItem("taskflowUser");
   localStorage.removeItem("taskflow_tasks");
-  
-  taskIdCounter = 1; 
+
+  taskIdCounter = 1;
   window.location.href = "index.html";
 });
 
@@ -129,7 +134,7 @@ async function loadTasksFromAPI() {
     const res = await fetch("https://dummyjson.com/todos");
     const data = await res.json();
 
-    taskIdCounter = 1; 
+    taskIdCounter = 1;
     tasks = data.todos.slice(0, 10).map((todo) => ({
       id: taskIdCounter++,
       text: todo.todo,
@@ -275,7 +280,7 @@ function addTaskEventListeners(taskElement, task) {
 
 // New deleteTask function - add this to your script
 function deleteTask(taskId) {
-    const id = Number(taskId);
+  const id = Number(taskId);
   const taskIndex = tasks.findIndex((t) => t.id === id);
   if (taskIndex !== -1) {
     const deletedTask = tasks[taskIndex];
@@ -329,7 +334,6 @@ function getTaskButtons(task) {
                 `;
   }
 }
-
 
 function markAsCompleted(taskId) {
   const task = tasks.find((t) => t.id === taskId);
@@ -405,9 +409,15 @@ function renderTasks() {
   archivedContainer.innerHTML = "";
 
   // Filter tasks by status
-  const todoTasks = tasks.filter((t) => t.status === "todo");
-  const completedTasks = tasks.filter((t) => t.status === "completed");
-  const archivedTasks = tasks.filter((t) => t.status === "archived");
+  const todoTasks = filterTasksBySearch(
+    tasks.filter((t) => t.status === "todo")
+  );
+  const completedTasks = filterTasksBySearch(
+    tasks.filter((t) => t.status === "completed")
+  );
+  const archivedTasks = filterTasksBySearch(
+    tasks.filter((t) => t.status === "archived")
+  );
 
   //sorting the tasks by priority
   todoTasks.sort((a, b) => priorityRank[a.priority] - priorityRank[b.priority]);
@@ -421,6 +431,19 @@ function renderTasks() {
   // Render todo tasks
   if (todoTasks.length === 0) {
     todoEmpty.classList.remove("hidden");
+    if (searchQuery) {
+      todoEmpty.innerHTML = `
+      <i class="fas fa-search text-3xl sm:text-4xl mb-4 opacity-50"></i>
+      <p class="text-base sm:text-lg">No matching todo tasks</p>
+      <p class="text-sm">Try adjusting your search terms</p>
+    `;
+    } else {
+      todoEmpty.innerHTML = `
+      <i class="fas fa-clipboard-list text-3xl sm:text-4xl mb-4 opacity-50"></i>
+      <p class="text-base sm:text-lg">No todo tasks</p>
+      <p class="text-sm">Add a new task to get started!</p>
+    `;
+    }
   } else {
     todoEmpty.classList.add("hidden");
     todoTasks.forEach((task) => {
@@ -433,6 +456,19 @@ function renderTasks() {
   // Render completed tasks
   if (completedTasks.length === 0) {
     completedEmpty.classList.remove("hidden");
+    if (searchQuery) {
+      completedEmpty.innerHTML = `
+      <i class="fas fa-search text-3xl sm:text-4xl mb-4 opacity-50"></i>
+      <p class="text-base sm:text-lg">No matching completed tasks</p>
+      <p class="text-sm">Try adjusting your search terms</p>
+    `;
+    } else {
+      completedEmpty.innerHTML = `
+      <i class="fas fa-trophy text-3xl sm:text-4xl mb-4 opacity-50"></i>
+      <p class="text-base sm:text-lg">No completed tasks yet</p>
+      <p class="text-sm">Complete some tasks to see them here!</p>
+    `;
+    }
   } else {
     completedEmpty.classList.add("hidden");
     completedTasks.forEach((task) => {
@@ -445,6 +481,19 @@ function renderTasks() {
   // Render archived tasks
   if (archivedTasks.length === 0) {
     archivedEmpty.classList.remove("hidden");
+    if (searchQuery) {
+      archivedEmpty.innerHTML = `
+      <i class="fas fa-search text-3xl sm:text-4xl mb-4 opacity-50"></i>
+      <p class="text-base sm:text-lg">No matching archived tasks</p>
+      <p class="text-sm">Try adjusting your search terms</p>
+    `;
+    } else {
+      archivedEmpty.innerHTML = `
+      <i class="fas fa-box text-3xl sm:text-4xl mb-4 opacity-50"></i>
+      <p class="text-base sm:text-lg">No archived tasks</p>
+      <p class="text-sm">Archive completed tasks for future reference!</p>
+    `;
+    }
   } else {
     archivedEmpty.classList.add("hidden");
     archivedTasks.forEach((task) => {
@@ -557,8 +606,6 @@ function showNotification(message, type = "info") {
   }, 3000);
 }
 
-
-
 // Focus task input when page loads
 window.addEventListener("load", function () {
   setTimeout(() => {
@@ -568,3 +615,48 @@ window.addEventListener("load", function () {
   }, 500);
 });
 
+// Search functionality
+function handleSearch(e) {
+  const newQuery = e.target.value.toLowerCase().trim();
+
+  // Show/hide clear button immediately for better UX
+  if (newQuery) {
+    clearSearchBtn.classList.remove("hidden");
+  } else {
+    clearSearchBtn.classList.add("hidden");
+  }
+
+  // Clear existing timeout
+  if (searchTimeout) {
+    clearTimeout(searchTimeout);
+  }
+
+  // Set new timeout - only search after user stops typing for 300ms
+  searchTimeout = setTimeout(() => {
+    searchQuery = newQuery;
+    updateUI();
+  }, 800);
+}
+
+function clearSearch() {
+  searchInput.value = "";
+  searchQuery = "";
+  clearSearchBtn.classList.add("hidden");
+
+  if (searchTimeout) {
+    clearTimeout(searchTimeout);
+    searchTimeout = null;
+  }
+
+  updateUI();
+}
+
+function filterTasksBySearch(taskArray) {
+  if (!searchQuery) return taskArray;
+
+  return taskArray.filter(
+    (task) =>
+      task.text.toLowerCase().includes(searchQuery) ||
+      task.priority.toLowerCase().includes(searchQuery)
+  );
+}
