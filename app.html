@@ -304,6 +304,15 @@
         }
       }
 
+      .signout-text {
+        display: none;
+      }
+      @media (min-width: 340px) {
+        .signout-text {
+          display: inline;
+        }
+      }
+
       .glass-effect {
         background: rgba(255, 255, 255, 0.1);
 
@@ -356,10 +365,11 @@
             </div>
             <button
               id="signOutBtn"
-              class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium"
+              class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center"
               onclick="handleSignOut()"
             >
-              <i class="fas fa-sign-out-alt mr-2"></i>Sign Out
+              <i class="fas fa-sign-out-alt mr-2"></i>
+              <span class="signout-text">Sign Out</span>
             </button>
           </div>
         </div>
