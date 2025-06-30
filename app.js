@@ -517,27 +517,60 @@ function saveTasks() {
   }
 }
 
+// function formatDateTime(dateString) {
+//   try {
+//     const date = new Date(dateString);
+//     const now = new Date();
+//     const diffInMinutes = Math.floor((now - date) / (1000 * 60));
+
+//     if (diffInMinutes < 1) {
+//       return "Just now";
+//     } else if (diffInMinutes < 60) {
+//       return `${diffInMinutes} minute${diffInMinutes === 1 ? "" : "s"} ago`;
+//     } else if (diffInMinutes < 1440) {
+//       const hours = Math.floor(diffInMinutes / 60);
+//       return `${hours} hour${hours === 1 ? "" : "s"} ago`;
+//     } else {
+//       const days = Math.floor(diffInMinutes / 1440);
+//       return `${days} day${days === 1 ? "" : "s"} ago`;
+//     }
+//   } catch (error) {
+//     return "Unknown";
+//   }
+// }
 function formatDateTime(dateString) {
   try {
     const date = new Date(dateString);
-    const now = new Date();
-    const diffInMinutes = Math.floor((now - date) / (1000 * 60));
-
-    if (diffInMinutes < 1) {
-      return "Just now";
-    } else if (diffInMinutes < 60) {
-      return `${diffInMinutes} minute${diffInMinutes === 1 ? "" : "s"} ago`;
-    } else if (diffInMinutes < 1440) {
-      const hours = Math.floor(diffInMinutes / 60);
-      return `${hours} hour${hours === 1 ? "" : "s"} ago`;
-    } else {
-      const days = Math.floor(diffInMinutes / 1440);
-      return `${days} day${days === 1 ? "" : "s"} ago`;
+    
+    
+    if (isNaN(date.getTime())) {
+      return "Invalid Date";
     }
+    
+    
+    const month = String(date.getMonth() + 1).padStart(2, '0'); 
+    const day = String(date.getDate()).padStart(2, '0');
+    const year = date.getFullYear();
+    
+    
+    let hours = date.getHours();
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    
+    
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; 
+    const formattedHours = String(hours).padStart(2, '0');
+    
+   
+    return `${month}/${day}/${year} ${formattedHours}:${minutes}:${seconds} ${ampm}`;
+    
   } catch (error) {
-    return "Unknown";
+    return "Error formatting date";
   }
 }
+
 
 function showError(message) {
   taskError.textContent = message;
