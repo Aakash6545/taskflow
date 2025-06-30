@@ -21,7 +21,6 @@ const importBtn = document.getElementById("importBtn");
 const exportBtn = document.getElementById("exportBtn");
 const fileInput = document.getElementById("fileInput");
 
-// Initialize app
 document.addEventListener("DOMContentLoaded", function () {
   initializeApp();
 });
@@ -39,10 +38,9 @@ async function initializeApp() {
   setupUserInterface();
   setupEventListeners();
 
-  // Load tasks (either from localStorage or API)
+  // Load tasks 
   await loadTasks();
 
-  // Hide loading overlay and update UI
   loadingOverlay.classList.add("hidden");
   updateUI();
 }
@@ -56,7 +54,6 @@ function getUserData() {
 }
 
 function setupUserInterface() {
-  // Set user name and avatar
   const firstName = userData.name.split(/\s+/)[0];
   document.getElementById("userName").textContent = firstName;
   const avatarUrl = `https://ui-avatars.com/api/?background=0D8ABC&color=fff&name=${userData.name}`;
@@ -65,11 +62,11 @@ function setupUserInterface() {
 
 
 document.getElementById('importBtnMobile').addEventListener('click', function() {
-  document.getElementById('importBtn').click(); // Trigger the same function as desktop
+  document.getElementById('importBtn').click(); 
 });
 
 document.getElementById('exportBtnMobile').addEventListener('click', function() {
-  document.getElementById('exportBtn').click(); // Trigger the same function as desktop
+  document.getElementById('exportBtn').click(); 
 });
 
 function setupEventListeners() {
@@ -95,7 +92,6 @@ function handleSignOut() {
   setTimeout(() => card.classList.add("opacity-100"), 10);
 }
 
-// Add this line to get the button reference
 const confirmSignOut = document.getElementById("confirmSignOut");
 const cancelSignOut = document.getElementById("cancelSignOut");
 const signoutModal = document.getElementById("signoutModal");
@@ -111,21 +107,20 @@ confirmSignOut.addEventListener("click", () => {
 cancelSignOut.addEventListener("click", () => {
   const modal = document.getElementById("signoutModal");
   const card = document.getElementById("signoutCard");
-  // fade out card
+  
   card.classList.remove("opacity-100");
   card.addEventListener("transitionend", () => modal.classList.add("hidden"), {
     once: true,
   });
 });
 
-// Optional backdrop-click to cancel
+
 signoutModal.addEventListener("click", (e) => {
   if (e.target === e.currentTarget) cancelSignOut.click();
 });
 
 async function loadTasks() {
   try {
-    // Check if tasks exist in localStorage
     const storedTasks = localStorage.getItem("taskflow_tasks");
 
     if (storedTasks) {
@@ -138,7 +133,6 @@ async function loadTasks() {
     }
   } catch (error) {
     console.error("Error loading tasks:", error);
-    // Initialize with empty tasks if error occurs
     tasks = [];
     taskIdCounter = 1;
   }
@@ -180,7 +174,7 @@ function handleAddTask(e) {
     id: taskIdCounter++,
     text: taskText,
     priority: priority,
-    status: currentStage === "todo" ? "todo" : "todo", // Always add to todo initially
+    status: currentStage === "todo" ? "todo" : "todo", // Always add to todo initially to handle the completed status
     lastModified: new Date().toISOString(),
   };
 
@@ -191,7 +185,7 @@ function handleAddTask(e) {
   saveTasks();
   updateUI();
 
-  // Show success notification
+  
   showNotification("Task added successfully! 🎉", "success");
 }
 
@@ -253,7 +247,6 @@ function createTaskElement(task) {
                 </div>
             `;
 
-  // Add event listeners for buttons
   setTimeout(() => {
     addTaskEventListeners(taskElement, task);
   }, 0);
@@ -262,7 +255,6 @@ function createTaskElement(task) {
 }
 
 function addTaskEventListeners(taskElement, task) {
-  // Attach listeners to both desktop and mobile buttons
   const buttonSets = [
     ...taskElement.querySelectorAll(".desktop-buttons button"),
     ...taskElement.querySelectorAll(".mobile-buttons button"),
@@ -283,17 +275,15 @@ function addTaskEventListeners(taskElement, task) {
     }
   });
 
-  // Add delete button listener - THIS WAS MISSING!
   const deleteBtn = taskElement.querySelector(".delete-btn");
   if (deleteBtn) {
     deleteBtn.addEventListener("click", (e) => {
-      e.stopPropagation(); // Prevent any parent event handlers
+      e.stopPropagation(); 
       deleteTask(task.id);
     });
   }
 }
 
-// New deleteTask function - add this to your script
 function deleteTask(taskId) {
   const id = Number(taskId);
   const taskIndex = tasks.findIndex((t) => t.id === id);
@@ -418,7 +408,6 @@ function renderTasks() {
   const completedEmpty = document.getElementById("completedEmpty");
   const archivedEmpty = document.getElementById("archivedEmpty");
 
-  // Clear containers
   todoContainer.innerHTML = "";
   completedContainer.innerHTML = "";
   archivedContainer.innerHTML = "";
@@ -634,19 +623,19 @@ window.addEventListener("load", function () {
 function handleSearch(e) {
   const newQuery = e.target.value.toLowerCase().trim();
 
-  // Show/hide clear button immediately for better UX
+  
   if (newQuery) {
     clearSearchBtn.classList.remove("hidden");
   } else {
     clearSearchBtn.classList.add("hidden");
   }
 
-  // Clear existing timeout
+  
   if (searchTimeout) {
     clearTimeout(searchTimeout);
   }
 
-  // Set new timeout - only search after user stops typing for 300ms
+  
   searchTimeout = setTimeout(() => {
     searchQuery = newQuery;
     updateUI();
@@ -777,13 +766,13 @@ function validateAndImportTasks(importData) {
 
     const importedTasks = importData.tasks;
 
-    // Validate each task structure
+    
     const validTasks = [];
     let invalidCount = 0;
 
     importedTasks.forEach((task, index) => {
       if (validateTaskStructure(task)) {
-        // Ensure unique IDs and proper structure
+        
         const validTask = {
           id: taskIdCounter++,
           text: String(task.text || `Imported task ${index + 1}`).trim(),

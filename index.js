@@ -1,9 +1,6 @@
-// TaskFlow Landing Page JavaScript
 document.addEventListener("DOMContentLoaded", function () {
-  // Check if user data already exists and redirect if valid
   checkExistingUser();
 
-  // Form elements
   const form = document.getElementById("verificationForm");
   const nameInput = document.getElementById("fullName");
   const dobInput = document.getElementById("dateOfBirth");
@@ -11,10 +8,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const dobError = document.getElementById("dobError");
   const loadingState = document.getElementById("loadingState");
 
-  // Form submission handler
   form.addEventListener("submit", handleFormSubmit);
 
-  // Real-time validation
   nameInput.addEventListener("blur", validateName);
   nameInput.addEventListener("input", clearNameError);
   dobInput.addEventListener("change", validateAge);
@@ -25,7 +20,6 @@ document.addEventListener("DOMContentLoaded", function () {
       if (userData) {
         const user = JSON.parse(userData);
         if (user.name && user.dateOfBirth && isValidAge(user.dateOfBirth)) {
-          // Auto-redirect for returning users
           showLoadingMessage("Welcome back! Redirecting...");
           setTimeout(() => {
             window.location.href = "app.html";
@@ -34,31 +28,30 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     } catch (error) {
       console.warn("Error checking existing user data:", error);
-      // Clear corrupted data
       localStorage.removeItem("taskflowUser");
     }
   }
   function formatName(rawName) {
     return rawName
       .trim()
-      .split(/\s+/) // split on any whitespace
+      .split(/\s+/) 
       .map(
         (word) =>
-          word.charAt(0).toUpperCase() + // uppercase first letter
-          word.slice(1).toLowerCase() // lowercase the rest
+          word.charAt(0).toUpperCase() + 
+          word.slice(1).toLowerCase() 
       )
       .join(" ");
   }
   function handleFormSubmit(e) {
     e.preventDefault();
 
-    // Reset errors
+   
     clearAllErrors();
 
     const name = nameInput.value.trim();
     const dob = dobInput.value;
 
-    // Validate form
+    
     let isValid = true;
 
     if (!validateName()) {
@@ -70,11 +63,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (isValid) {
-      // Show loading state
+      
       showLoadingState();
 
-      // Store user data
-      const rawName = nameInput.value;      // e.g. "jOhN doE mCkenZIE"
+      
+      const rawName = nameInput.value;      
       const formattedName = formatName(rawName);
       const userData = {
         name: formattedName,
@@ -85,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
       try {
         localStorage.setItem("taskflowUser", JSON.stringify(userData));
 
-        // Simulate processing time for better UX
+        
         setTimeout(() => {
           window.location.href = "app.html";
         }, 1500);
@@ -109,7 +102,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return false;
     }
 
-    // Check for at least one letter
+    
     if (!/[a-zA-Z]/.test(name)) {
       showError(nameError, "Name must contain at least one letter");
       return false;
@@ -140,17 +133,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const today = new Date();
     const birthDate = new Date(dateOfBirth);
 
-    // Check if birth date is valid
+    
     if (isNaN(birthDate.getTime())) {
       return false;
     }
 
-    // Check if birth date is not in the future
     if (birthDate > today) {
       return false;
     }
 
-    // Calculate age
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
 
@@ -169,7 +160,6 @@ document.addEventListener("DOMContentLoaded", function () {
     span.textContent = message;
     errorElement.classList.remove("hidden");
 
-    // Add shake animation to the input
     const input = errorElement.previousElementSibling;
     input.classList.add("animate-pulse");
     setTimeout(() => {
@@ -215,7 +205,7 @@ document.addEventListener("DOMContentLoaded", function () {
     loadingElement.classList.remove("hidden");
   }
 
-  // Add some nice keyboard shortcuts
+  // Adding some keyboard shortcuts
   document.addEventListener("keydown", function (e) {
     // Enter key to submit form
     if (

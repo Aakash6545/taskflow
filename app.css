@@ -396,7 +396,6 @@ body {
   border-color: rgba(100, 116, 139, 0.5);
 }
 
-/* Import modal specific styles */
 #importModal .opacity-0 {
   opacity: 0;
   transform: scale(0.95);
@@ -406,7 +405,6 @@ body {
   transform: scale(1);
 }
 
-/* File input styling (though it's hidden) */
 #fileInput {
   position: absolute;
   left: -9999px;
@@ -414,7 +412,6 @@ body {
   pointer-events: none;
 }
 
-/* Improved responsive modals */
 .modal-container {
   padding: 1rem;
 }
